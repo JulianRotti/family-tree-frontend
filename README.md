@@ -2,6 +2,9 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Tipps
+- Chakra Components von hier benutzen: https://chakra-templates.vercel.app/components
+
 ## Available Scripts
 
 In the project directory, you can run:
