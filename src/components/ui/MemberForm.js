@@ -8,18 +8,14 @@ import {
   FormLabel,
   Input,
   ButtonGroup,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-  useToast,  // Import useToast
+  useToast,
 } from '@chakra-ui/react';
 import useMemberForm from '../../hooks/useMemberForm.js';
 
 const MemberForm = () => {
-  const toast = useToast();  // Initialize Chakra's useToast
+  const toast = useToast();
   const { handleSubmit, loading } = useMemberForm();
-  
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -27,15 +23,11 @@ const MemberForm = () => {
     deathDate: '',
   });
 
-  const [alertVisible, setAlertVisible] = useState(false);
-  const [alertStatus, setAlertStatus] = useState(''); // success or error
-
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  // Restrict input to only letters and hyphen (-), no spaces allowed
   const handleNameInput = (e) => {
     const { value } = e.target;
     const sanitizedValue = value.replace(/[^A-Za-z-]/g, '');  // Allow only letters and hyphens
@@ -46,7 +38,6 @@ const MemberForm = () => {
     const result = await handleSubmit(formData);
 
     if (result.success) {
-      // Display success toast in the top-right corner
       toast({
         title: 'Member added successfully!',
         description: `${formData.firstName} ${formData.lastName} has been added to the family.`,
@@ -55,8 +46,7 @@ const MemberForm = () => {
         isClosable: true,
         position: 'top-right',
       });
-      
-      // Reset the form data after submission
+
       setFormData({
         firstName: '',
         lastName: '',
@@ -64,7 +54,6 @@ const MemberForm = () => {
         deathDate: '',
       });
     } else {
-      // Display error toast in the top-right corner
       toast({
         title: 'Error adding family member',
         description: result.error || 'There was an issue adding the family member.',
@@ -78,16 +67,13 @@ const MemberForm = () => {
 
   return (
     <Box
-      borderWidth="1px"
+      bg="white"  // White background
+      boxShadow="2xl"  // Strong shadow
       rounded="lg"
-      shadow="1px 1px 3px rgba(0,0,0,0.3)"
-      maxWidth={800}
       p={6}
+      maxWidth={800}
       m="10px auto"
-      as="form"
     >
-
-      {/* First and Last Name */}
       <Flex mb="2%">
         <FormControl mr="5%" isRequired>
           <FormLabel htmlFor="firstName" fontWeight="normal">
@@ -97,8 +83,8 @@ const MemberForm = () => {
             id="firstName"
             placeholder="First Name"
             value={formData.firstName}
-            onInput={handleNameInput}      // Restrict to letters and hyphens
-            maxLength={30}                 // Limit input to 30 characters
+            onInput={handleNameInput}
+            maxLength={30}
           />
         </FormControl>
 
@@ -110,13 +96,12 @@ const MemberForm = () => {
             id="lastName"
             placeholder="Last Name"
             value={formData.lastName}
-            onInput={handleNameInput}      // Restrict to letters and hyphens
-            maxLength={30}                 // Limit input to 30 characters
+            onInput={handleNameInput}
+            maxLength={30}
           />
         </FormControl>
       </Flex>
 
-      {/* Birth Date and Death Date */}
       <Flex mb="2%">
         <FormControl mr="5%" isRequired>
           <FormLabel htmlFor="birthDate" fontWeight="normal">

@@ -1,17 +1,22 @@
 import React from 'react';
-import { Box, Text } from '@chakra-ui/react';
-import SectionTitle from '../components/ui/SectionTitle.js';  // Import the SectionTitle component
+import { Box } from '@chakra-ui/react';
+import SectionTitle from '../components/ui/SectionTitle.js';
+import FamilyTree from '../components/ui/FamilyTree/FamilyTree.js';
+import FamilyNodeHover from '../components/ui/FamilyTree/FamilyNodeHover.js';
 
-const FamilyTree = () => {
+const FamilyTreePage = () => {
   return (
-    <div>
-      {/* Use SectionTitle to display the heading */}
+    <Box p={6}>
+      {/* Section Title */}
       <SectionTitle 
         mainTitle="Explore" 
         highlightedText="family tree" 
       />
-    </div>
+
+      {/* Render the FamilyTree component */}
+      <FamilyTree memberId={30} />  
+    </Box>
   );
 };
 
-export default FamilyTree;
+export default FamilyTreePage;

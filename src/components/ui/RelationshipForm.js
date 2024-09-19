@@ -55,9 +55,10 @@ const RelationshipForm = () => {
 
   return (
     <Box
+      bg="white"
       borderWidth="1px"
       rounded="lg"
-      shadow="1px 1px 3px rgba(0,0,0,0.3)"
+      shadow="2xl"
       maxWidth={800}
       p={6}
       m="10px auto"
