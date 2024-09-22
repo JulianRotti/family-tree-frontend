@@ -14,7 +14,7 @@ const FamilyTreePage = () => {
       />
 
       {/* Render the FamilyTree component */}
-      <FamilyTree memberId={30} />  
+      <FamilyTree memberId={1} />  
     </Box>
   );
 };

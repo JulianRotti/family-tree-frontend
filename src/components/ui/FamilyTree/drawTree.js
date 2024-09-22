@@ -1,9 +1,4 @@
-import { drawNode, drawText, drawLine, drawMemberNode } from './drawHelpers.js';
-
-const getMemberName = (memberId, memberData) => {
-  const member = memberData.find((m) => m.id === memberId);
-  return member ? `${member.first_name} ${member.last_name}` : 'Unknown';
-};
+import { drawNode,  drawLine, drawMemberNode } from './drawHelpers.js';
 
 const drawSingleSpouse = (svg, familyTree, memberData, inter_mid, x_mid, y_pos, spacings, colors, start, setHoveredMember, setSelectedMember) => {
   const member_pos = x_mid - spacings.w_node / 2 - spacings.w_partner / 2;

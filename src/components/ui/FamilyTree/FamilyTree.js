@@ -33,7 +33,7 @@ const FamilyTree = ({ memberId, w_node = 15, w_partner = 60, w_children = 80, h_
       d3.select(svgRef.current).selectAll('*').remove();
 
       const svg = d3.select(svgRef.current)
-        .attr('width', 1000)
+        .attr('width', 1400)
         .attr('height', 600)
         .call(d3.zoom().on('zoom', (event) => {
           svg.attr('transform', event.transform);
@@ -48,16 +48,15 @@ const FamilyTree = ({ memberId, w_node = 15, w_partner = 60, w_children = 80, h_
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <Grid templateColumns="repeat(7, 1fr)" gap={6} p={6}>
+    <Grid templateColumns="repeat(5, 1fr)" gap={6} p={6}>
       {/* Left column for family tree (spanning 4 columns) */}
-      <GridItem colSpan={1}></GridItem>
       <GridItem colSpan={4}>
         <Box
           bg="white"
           boxShadow="2xl"
           rounded="lg"
           p={6}
-          maxW="1000px"
+          maxW="1400px"
           overflow="hidden"
           position="relative"
         >
@@ -66,7 +65,7 @@ const FamilyTree = ({ memberId, w_node = 15, w_partner = 60, w_children = 80, h_
       </GridItem>
 
       {/* Right column for the hover card (spanning 1 columns) */}
-      <GridItem colSpan={2}>
+      <GridItem colSpan={1}>
       {hoveredMember || selectedMember ? (
         <FamilyNodeHover
           name={(hoveredMember || selectedMember).name}
