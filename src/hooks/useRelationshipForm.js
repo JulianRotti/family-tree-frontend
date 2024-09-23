@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createRelationship } from '../services/api/api.js';
+import { createRelationship } from '../services/api/api.js';  // Import the API function
 
 const useRelationshipForm = () => {
   const [loading, setLoading] = useState(false);
@@ -28,12 +28,13 @@ const useRelationshipForm = () => {
       };
 
       // Call the API to create the relationship
-      const response = await createRelationship(newRelationship);
+      await createRelationship(newRelationship);
 
       return { success: true };
     } catch (error) {
+      // Catch and return the detailed error message from the API
       console.error('Error creating relationship:', error);
-      return { success: false, error: 'Failed to create relationship.' };
+      return { success: false, error: error.message || 'Failed to create relationship.' };
     } finally {
       setLoading(false);
     }

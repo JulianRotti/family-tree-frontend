@@ -23,12 +23,16 @@ const useMemberForm = () => {
         death_date: deathDate || null,  // If death date exists, use it, else null
       };
 
-      const response = await createFamilyMember(newMember);  // Call the API
+      // Call the API using createFamilyMember
+      await createFamilyMember(newMember);
 
+      // If successful, return success
       return { success: true };
+
     } catch (error) {
+      // Catch and return the detailed error message from the API
       console.error('Error creating family member:', error);
-      return { success: false, error: 'Failed to add the family member.' };
+      return { success: false, error: error.message || 'Failed to add the family member.' };
     } finally {
       setLoading(false);
     }
