@@ -14,6 +14,7 @@ const useFamilyMembers = () => {
         const formattedMembers = members.map(member => ({
           id: member.id,
           name: `${member.first_name} ${member.last_name}`,  // Concatenate first_name and last_name
+          birth_date: member.birth_date,
         }));
         setFamilyMembers(formattedMembers);
       } catch (err) {
