@@ -75,7 +75,7 @@ const RelationshipForm = () => {
           >
             {familyMembers.map((member) => (
               <option key={member.id} value={member.id}>
-                {member.name}
+                {member.name} ({member.birth_date})
               </option>
             ))}
           </Select>
@@ -102,7 +102,7 @@ const RelationshipForm = () => {
           >
             {familyMembers.map((member) => (
               <option key={member.id} value={member.id}>
-                {member.name}
+                {member.name} ({member.birth_date})
               </option>
             ))}
           </Select>
