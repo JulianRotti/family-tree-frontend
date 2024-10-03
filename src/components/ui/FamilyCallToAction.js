@@ -62,10 +62,6 @@ const FamilyCallToAction = ({
             {buttonText2}
           </Button>
         </Stack>
-        {/* Center the Icon */}
-        <Flex w={'full'} justify="center" align="center" mt={{ base: 12, sm: 16 }}>
-          <Illustration icon={icon} height={{ sm: '24rem', lg: '28rem' }} />
-        </Flex>
       </Stack>
     </Container>
   );

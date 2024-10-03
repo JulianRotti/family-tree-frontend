@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import { drawTree } from './drawTree.js';
 import { useFamilyTree } from '../../../hooks/useFamilyTree.js';
 
-const FamilyTree = ({ memberId, setHoveredMember, setSelectedMember, width, height, w_node = 15, w_partner = 60, w_children = 80, h_intermediary = 30, h_gen = 70 }) => {
+const FamilyTree = ({ memberId, setHoveredMember, setSelectedMember, width, height, w_node = 30, w_partner = 80, w_children = 100, h_intermediary = 30, h_gen = 70 }) => {
   const { familyTree, memberData, loading, error } = useFamilyTree(memberId, w_node, w_partner, w_children);
   const svgRef = useRef();
 

@@ -8,7 +8,7 @@ const ManageMembers = () => {
   return (
     <Box maxW="1200px" mx="auto" p={6}>
       {/* Use the Title component */}
-      <Title mainTitle="Manage" highlightedText="Family Members and Relationships" />
+      <Title mainTitle="Manage" highlightedText="family members and relationships" />
 
       {/* Grid layout with two columns for MemberForm and RelationshipForm */}
       <Grid

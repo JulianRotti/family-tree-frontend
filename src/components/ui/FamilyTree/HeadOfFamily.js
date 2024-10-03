@@ -31,7 +31,6 @@ const HeadOfFamilySelector = ({ headOfFamily, setHeadOfFamily }) => {
                     id="select_head_of_family_id"
                     value={headOfFamily.member_id}
                     onChange={handleChange}
-                    placeholder="Head of Family"
                 >
                     {familyMembers.map((member) => (
                         <option key={member.id} value={member.id}>
