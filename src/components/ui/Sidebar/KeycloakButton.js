@@ -1,18 +1,11 @@
-import { loginKeycloak, logoutKeycloak, authentificationListener, checkKeycloakLogin, hasRole } from "../../../services/keycloak/keycloak.js";
+import { loginKeycloak, logoutKeycloak } from "../../../services/keycloak/keycloak.js";
 import { Button } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import { useContext } from "react";
+import { AuthContext } from "../../../contexts/AuthContext.js";
 
 export default function KeycloakButton() {
 
-  // State to keep track of the current authentication status
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  // Check initial authentication status when component mounts
-  // Set up event listeners for setting the authentication status in the future
-  useEffect(() => {
-    setIsAuthenticated(checkKeycloakLogin());
-    authentificationListener(setIsAuthenticated);
-  }, []);
+  const {isAuthenticated} = useContext(AuthContext);
 
   // Login/Logout based on the current authentication status
   const handleButtonClick = async () => {
@@ -26,7 +19,7 @@ export default function KeycloakButton() {
 
   // Display Login/Login based on the current authentication status
   return (
-    <Button colorScheme="blue" w="full" onClick={handleButtonClick}>
+    <Button colorScheme="blue" w="full" onClick={handleButtonClick} variant='outline'>
       {isAuthenticated ? "Logout" : "Login"}
     </Button>
   );

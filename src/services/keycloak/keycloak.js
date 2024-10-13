@@ -55,3 +55,11 @@ export const hasRole = (role) => {
     }
     return keycloak.tokenParsed.realm_access.roles.includes(role);
 }
+
+// Get username and roles from the token
+export const getUsernameAndRoles = (givenRoles) => {
+    return {
+        username: keycloak.tokenParsed.preferred_username,
+        roles: keycloak.tokenParsed.realm_access.roles.filter(role => givenRoles.includes(role))
+    };
+}

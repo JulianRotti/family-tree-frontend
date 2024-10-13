@@ -3,6 +3,8 @@ import { Box, Flex, Text, CloseButton } from '@chakra-ui/react';
 import NavItem from './NavItem.js';
 import routes from '../../../routes/RouteConfig.js';
 import KeycloakButton from './KeycloakButton.js'; // Import the button or any other component you want to add
+import AccessControl from '../../AccessControl.js'; 
+import LoginInfo from './LoggedIn.js';
 
 export default function SimpleSidebar({ children }) {
   return (
@@ -24,15 +26,21 @@ export default function SimpleSidebar({ children }) {
         </Flex>
 
         {/* Map over routes to create NavItems */}
-        {routes.map((route) => (
-          <NavItem key={route.path} icon={route.icon} to={route.path}>
-            {route.name}
-          </NavItem>
+        {routes
+        .filter(route => !route.hidden)
+        .map((route) => (
+          <AccessControl key={route.path} requiredRoles={route.roles}>
+            <NavItem icon={route.icon} to={route.path}>
+              {route.name}
+            </NavItem>
+          </AccessControl>
         ))}
 
         {/* Add any elements you want (e.g., KeycloakButton) */}
         <Box position="absolute" bottom="10" w="full" px="4">
-          <KeycloakButton />
+          <LoginInfo/>
+          <Box h="5"/>
+          <KeycloakButton/>
         </Box>
       </Box>
 

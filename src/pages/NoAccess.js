@@ -8,7 +8,7 @@ const NoAccess = () => {
         mainTitle="No"       // Main title
         highlightedText="Access"                  // Highlighted text (e.g., "made easy")
         description="You are not logged in or don't have the necessary rights to access this page."
-        icon={FaTree}                                // Pass the icon you want to display
+        icon={null}                                // Pass the icon you want to display
         buttonText1="Get Started"
         buttonText2="Discover More"
       />
