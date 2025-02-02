@@ -9,28 +9,28 @@ const routes = [
     path: '/',
     icon: FiHome,
     component: lazy(() => import('../pages/HomePage.js')),  // HomePage.js at "/"
-    roles: ['public'],
+    role: 'public',
   },
   {
-    name: 'Manage Members',
+    name: 'Familienmitglieder verwalten',
     path: '/manage-members',
     icon: FiUsers,
     component: lazy(() => import('../pages/ManageMembers.js')),  // ManageMembers.js at "/manage-members"
-    roles: ['editor'],
+    role: 'editor',
   },
   {
-    name: 'Family Tree',
+    name: 'Stammbaum',
     path: '/family-tree',
     icon: FaTree,
     component: lazy(() => import('../pages/FamilyTree.js')),
-    roles: ['editor', 'viewer'],
+    role: 'viewer',
   },
   {
-    name: 'No Access to this Page',
+    name: 'Kein Zugriff auf diese Seite',
     path: '/no-access',
     icon: null,
     component: lazy(() => import('../pages/NoAccess.js')),
-    roles: ['public'],
+    role: 'public',
     hidden: true,
   },
 ];

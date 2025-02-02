@@ -7,7 +7,6 @@ import {
     Flex,
     Text,
     Stack,
-    useColorModeValue,
   } from '@chakra-ui/react';
   import { FaBirthdayCake, FaCross } from 'react-icons/fa'; // Import Font Awesome icons
   
@@ -17,7 +16,10 @@ import {
         <Box
           maxW={'270px'}
           w={'full'}
-          bg={useColorModeValue('white', 'gray.800')}
+          bg="brand.1Alpha"
+          /*
+            useColorModeValue('white', 'gray.800')
+          */
           boxShadow={'2xl'}
           rounded={'md'}
           overflow={'hidden'}>

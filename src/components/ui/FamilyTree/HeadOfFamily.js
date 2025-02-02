@@ -1,4 +1,8 @@
-import { Box, FormLabel, FormControl, Select } from '@chakra-ui/react';
+import { Box, Field } from '@chakra-ui/react';
+import {
+    NativeSelectField,
+    NativeSelectRoot,
+} from "components/ui/native-select.jsx";
 
 import useFamilyMembers from '../../../hooks/useFamilyMembers.js';
 
@@ -25,20 +29,20 @@ const HeadOfFamilySelector = ({ headOfFamily, setHeadOfFamily }) => {
             maxW={'270px'}
             w={'full'}
         >
-            <FormControl>
-                <FormLabel>Head of Family</FormLabel>
-                <Select
-                    id="select_head_of_family_id"
-                    value={headOfFamily.member_id}
-                    onChange={handleChange}
-                >
-                    {familyMembers.map((member) => (
-                        <option key={member.id} value={member.id}>
-                            {member.name} ({member.birth_date})
-                        </option>
-                    ))}
-                </Select>
-            </FormControl>
+            <Field.Root>
+                <Field.Label>Head of Family</Field.Label>
+                <NativeSelectRoot>
+                    <NativeSelectField
+                        id="select_head_of_family_id"
+                        value={headOfFamily.member_id}
+                        onChange={handleChange}
+                        items={familyMembers.map((member) => ({
+                            label: `${member.name} (${member.birth_date})`,
+                            value: member.id,
+                        }))}
+                    />
+                </NativeSelectRoot>
+            </Field.Root>
         </Box>
     );
 };

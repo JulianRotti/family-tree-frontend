@@ -36,6 +36,15 @@ export const checkKeycloakLogin = () => {
     return keycloak.authenticated;
 }
 
+// Function to get the access token of the current authenticated user
+export const getAccessToken = () => {
+    if (keycloak.authenticated) {
+        return keycloak.token; // Return the access token
+    } else {
+        throw new Error('User is not authenticated.');
+    }
+}
+
 // Set up event listeners for setting the authentication status
 export const authentificationListener = (setIsAuthenticated) => {
     keycloak.onAuthSuccess = () => {

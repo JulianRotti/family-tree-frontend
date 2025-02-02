@@ -1,8 +1,18 @@
-const API_URL = 'http://localhost:5000/api/family';  // Adjust if the API URL is different
+import { getAccessToken } from "../keycloak/keycloak.js";
+
+const API_URL = process.env.REACT_APP_BACKEND_API_URL;
 
 export const apiCall = async (url, options) => {
   try {
-    const response = await fetch(url, options);
+    const token = getAccessToken();
+    const optionsWithAuth = {
+      ...options,
+      headers: {
+        ...(options.headers || {}),
+        'Authorization': `Bearer ${token}`,
+      }
+    }
+    const response = await fetch(url, optionsWithAuth);
 
     if (!response.ok) {
       const errorData = await response.json();

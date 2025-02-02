@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Grid, GridItem } from '@chakra-ui/react';
-import SectionTitle from '../components/ui/SectionTitle.js';
 import FamilyTree from '../components/ui/FamilyTree/FamilyTree.js';
-import FamilyNodeHover from '../components/ui/FamilyTree/FamilyNodeHover.js';  // Import hover card component
+// import SocialProfileWithImage from '../components/ui/FamilyTree/FamilyNodeHover.js';  // Import hover card component
 import HeadOfFamilySelector from '../components/ui/FamilyTree/HeadOfFamily.js';
 
 const FamilyTreePage = () => {
@@ -15,12 +14,6 @@ const FamilyTreePage = () => {
 
   return (
     <Box p={6}>
-      {/* Section Title */}
-      <SectionTitle 
-        mainTitle="Explore" 
-        highlightedText="family tree" 
-      />
-
       {/* Grid Layout */}
       <Grid templateColumns="repeat(5, 1fr)" gap={6} p={6}>
         {/* Family Tree takes up 4 columns */}
@@ -61,8 +54,9 @@ const FamilyTreePage = () => {
             headOfFamily={headOfFamily}
             setHeadOfFamily={setHeadOfFamily}
           />
+          {/*
           {hoveredMember || selectedMember ? (
-            <FamilyNodeHover
+            <SocialProfileWithImage
               name={(hoveredMember || selectedMember).name}
               initialName={(hoveredMember || selectedMember).initialName}
               birthDate={(hoveredMember || selectedMember).birthDate}
@@ -70,6 +64,7 @@ const FamilyTreePage = () => {
               avatarUrl={(hoveredMember || selectedMember).avatarUrl}
             />
           ) : null}
+           */}
           </Box>
         </GridItem>
       </Grid>

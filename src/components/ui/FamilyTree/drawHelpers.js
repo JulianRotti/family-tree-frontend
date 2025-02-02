@@ -1,5 +1,3 @@
-import * as d3 from 'd3';
-
 // Helper function to create member data object
 const createMemberData = (event, member) => ({
   name: `${member.first_name} ${member.last_name}`,
@@ -61,7 +59,7 @@ export const drawMemberNode = (svg, x, y, width, height, color, fontSize, member
   textElement.remove();  // Temporarily remove the text to place the box behind
 
   // Draw the background box with mouseover/mouseout applied to the whole box
-  const rect = svg.append('rect')
+  svg.append('rect')
     .attr('x', x - width / 2)
     .attr('y', y - height / 2)
     .attr('width', width)

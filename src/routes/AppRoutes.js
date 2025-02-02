@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import routes from './RouteConfig.js';
-import AccessControl from '../components/AccessControl.js';
+import AccessControl from '../components/ui/Authentication/AccessControl.js';
 
 const AppRoutes = () => {
   return (
@@ -12,7 +12,7 @@ const AppRoutes = () => {
            key={route.path} 
            path={route.path} 
            element={
-            <AccessControl requiredRoles={route.roles} redirect={true}>
+            <AccessControl requiredRole={route.role} redirect={true}>
               <route.component />
             </AccessControl>
         } />
