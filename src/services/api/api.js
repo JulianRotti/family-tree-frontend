@@ -4,7 +4,7 @@ const API_URL = process.env.REACT_APP_BACKEND_API_URL;
 
 export const apiCall = async (url, options) => {
   try {
-    const token = getAccessToken();
+    const token = await getAccessToken();
     const optionsWithAuth = {
       ...options,
       headers: {
@@ -27,6 +27,7 @@ export const apiCall = async (url, options) => {
 
 // Fetch all family members
 export const getFamilyMembers = async () => {
+  console.log('API_URL:', API_URL);
   return apiCall(`${API_URL}/members`, {
     method: 'GET',
   });

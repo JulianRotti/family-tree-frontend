@@ -37,11 +37,13 @@ export const checkKeycloakLogin = () => {
 }
 
 // Function to get the access token of the current authenticated user
-export const getAccessToken = () => {
+export const getAccessToken = async () => {
     if (keycloak.authenticated) {
+        const minValidity = 10; // Minimum validity in seconds
+        await keycloak.updateToken(minValidity);
         return keycloak.token; // Return the access token
     } else {
-        throw new Error('User is not authenticated.');
+        throw new Error('Benutzer ist nicht eingeloggt.');
     }
 }
 
