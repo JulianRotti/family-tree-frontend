@@ -43,6 +43,16 @@ export const createFamilyMember = async (memberData) => {
   });
 };
 
+export const updateFamilyMember = async (memberData) => {
+  return apiCall(`${API_URL}/members`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(memberData),
+  });
+};
+
 
 export const getRelationships = async () => {
   return apiCall(`${API_URL}/relationships`, {
@@ -52,6 +62,7 @@ export const getRelationships = async () => {
 
 
 export const createRelationship = async (relationshipData) => {
+  console.log("Relationship value:", relationshipData);
   return apiCall(`${API_URL}/relationships`, {
     method: 'POST',
     headers: {

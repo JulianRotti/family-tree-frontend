@@ -1,49 +1,12 @@
-import { Box, Fieldset, Stack, Separator, createListCollection } from "@chakra-ui/react"
-import {
-    SelectContent,
-    SelectItem,
-    SelectLabel,
-    SelectRoot,
-    SelectTrigger,
-    SelectValueText,
-} from "components/ui/select.jsx"
-import MemberForm from "components/ui/MemberForms/MemberForm.js"
+import { Box, Fieldset, Stack, Separator, Text } from "@chakra-ui/react";
+import MemberForm from "components/ui/MemberForms/MemberForm.js";
+import SelectMembers from "components/ui/MemberForms/SelectMember.js";
 
-/* How to approach the problem:
-    [ ] Implement BE endpoint for modifying a family member based on id
-    [ ] Extend MemberForm to distinguish between new and existing members (by passing an id from the select field)
-*/      
-
-/* Refactor me: Extract to a separate file to use for several forms */
-const SelectMembers = ({ selectLabel }) => {
-    return (
-        <SelectRoot collection={frameworks} size="sm">
-            <SelectLabel>{selectLabel}</SelectLabel>
-            <SelectTrigger>
-                <SelectValueText placeholder="Name" />
-            </SelectTrigger>
-            <SelectContent>
-                {frameworks.items.map((movie) => (
-                    <SelectItem item={movie} key={movie.value}>
-                        {movie.label}
-                    </SelectItem>
-                ))}
-            </SelectContent>
-        </SelectRoot>
-    )
-};
-
-/* Refactor me: Delete mock data */
-const frameworks = createListCollection({
-    items: [
-        { label: "Hans Zimmer", value: "id1" },
-        { label: "Rudolph Hammer", value: "id2" },
-        { label: "Anita Bogenfrau", value: "id3" }
-    ],
-});
-
+import { useState } from "react";
 
 const ModifyMemberForm = ({ maxW }) => {
+    const [selectedMember, setSelectedMember] = useState(null);
+    // console.log(selectedMember);
     return (
         <Box>
             <Fieldset.Root size="lg" maxW={maxW}>
@@ -57,9 +20,12 @@ const ModifyMemberForm = ({ maxW }) => {
                 <Fieldset.Content>
                     {/* ########## Suchen ########## */}
                     <Separator />
-                    <SelectMembers selectLabel="Familienmitglied auswählen" />
+                    <Text textStyle="sm" fontWeight="bold">Familienmitglied auswählen</Text>
+                    <SelectMembers 
+                        setSelectedMember={setSelectedMember}
+                        selectMember={selectedMember} />
                 </Fieldset.Content>
-                <MemberForm />
+                <MemberForm defaultValues={selectedMember}/>
 
             </Fieldset.Root>
         </Box>

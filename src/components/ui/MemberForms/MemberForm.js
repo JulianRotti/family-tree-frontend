@@ -9,70 +9,127 @@ import {
 } from "@chakra-ui/react";
 import { Field } from "components/ui/field.jsx";
 import { Switch } from "components/ui/switch.jsx";
-import { toaster } from "components/ui/toaster.jsx"
 import {
     FileUploadList,
     FileUploadRoot,
     FileUploadTrigger,
 } from "components/ui/file-upload.jsx";
 import { HiUpload } from "react-icons/hi";
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useForm } from "react-hook-form";
 
-import { createFamilyMember } from "services/api/api.js";
+import { createFamilyMember, updateFamilyMember } from 'services/api/api.js';  // Import the API function
+import { toaster } from "components/ui/toaster.jsx"
+import { MemberContext } from 'contexts/MemberContext.js';
 
-/* Todos:
-[x] Token expiry 
-[x] Error handling (toasts)
-[ ] Validation (required fields, format, display directly at field)
-[ ] Loading button (dont click twice while loading)
-[ ] convert empty strings to null (or should this be done in the BE?)
-*/
+import useSaveMember from "hooks/useSaveMember.js";
 
-const MemberForm = () => {
+// Input validation
+const nameRegex = /^[A-Za-zÄÖÜäöüß-]+$/; // Allows letters, hyphens, and German umlauts
+const cityRegex = /^[A-Za-zÄÖÜäöüß()\s-]+$/; // Allows letters, hyphens, spaces, parentheses, and umlauts
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Standard email format
+const telephoneRegex = /^[0-9+\s()-]{7,20}$/; // Allows digits, spaces, +, (), - (7-20 characters)
+const streetNumberRegex = /^[A-Za-zÄÖÜäöüß\s.-]+\s\d+[A-Za-z]?$/; // Matches "Müllerstraße 12", "Hauptstr. 5", "Goethe-Straße 7A"
+
+const validations = {
+    firstName: {
+        required: {
+            value: true,
+            message: 'Vorname muss angegeben sein.'
+        },
+        pattern: {
+            value: nameRegex,
+            message: 'Unerlaubte Zeichen im Vornamen.'
+        }
+    },
+    lastName: {
+        required: {
+            value: true,
+            message: 'Nachname muss angegeben sein.'
+        },
+        pattern: {
+            value: nameRegex,
+            message: 'Unerlaubte Zeichen im Nachnamen.'
+        }
+    },
+    birthDate: {
+        required: {
+            value: true,
+            message: 'Geburtsdatum muss angegeben sein.'
+        }
+    },
+    birthName: {
+        pattern: {
+            value: nameRegex,
+            message: 'Unerlaubte Zeichen im Geburtsnamen.'
+        }
+    },
+    birthCity: {
+        required: {
+            value: true,
+            message: 'Geburtsort muss angegeben sein.'
+        },
+        pattern: {
+            value: cityRegex,
+            message: 'Unerlaubte Zeichen im Geburtsort.'
+        }
+    },
+    birthCountry: {
+        required: {
+            value: true,
+            message: 'Geburtsland muss angegeben sein.'
+        },
+        pattern: {
+            value: cityRegex,
+            message: 'Unerlaubte Zeichen im Geburtsland.'
+        }
+    },
+    email: {
+        pattern: {
+            value: emailRegex,
+            message: 'Unerlaubte Zeichen in E-Mail-Adresse.'
+        }
+    },
+    telephone: {
+        pattern: {
+            value: telephoneRegex,
+            message: 'Unerlaubte Zeichen in Telefonnummer.'
+        }
+    },
+    streetNumber: {
+        pattern: {
+            value: streetNumberRegex,
+            message: 'Unerlaubte Zeichen in Straße und Hausnummer.'
+        }
+    },
+    plz: {
+        pattern: {
+            value: /^[0-9]{5}$/,
+            message: 'Postleitzahl muss 5-stellig sein.'
+        }
+    },
+    ort: {
+        pattern: {
+            value: cityRegex,
+            message: 'Unerlaubte Zeichen im Ort.'
+        }
+    },
+}
+
+// Form component
+const MemberForm = ({ defaultValues }) => {
     const [hasBirthName, setHasBirthName] = useState(false);
     const [hasDeathDate, setHasDeathDate] = useState(false);
     const { register, handleSubmit, formState: { errors }, reset } = useForm({
-        defaultValues: {
-            first_name: "",
-            last_name: "",
-            birth_date: "",
-            birth_city: "",
-            birth_country: "",
-            email: "",
-            telephone: "",
-            street_number: "",
-            plz: "",
-            city: "",
-        }
+        mode: "onTouched",
+        defaultValues
     });
-    
-    const [loading, setLoading] = useState(false);
-    
-    const onSubmit = async (data) => { 
-        setLoading(true); 
-        try {
-            // Simulate API delay for testing loading state (remove in production)
-            await new Promise(resolve => setTimeout(resolve, 3000)); 
-            
-            await createFamilyMember(data); // Actual API call
+    useEffect(() => {
+        reset(defaultValues); // Updates form values when `defaultValues` changes
+    }, [defaultValues, reset]); // Re-run effect when `defaultValues` changes
 
-            reset();
-            setHasBirthName(false);
-            setHasDeathDate(false);
-            toaster.create({
-                title: `${data.first_name} ${data.last_name} erfolgreich gespeichert.`,
-                type: "success",
-              })
-        } catch (error) {
-            toaster.create({
-                title: `${error}`,
-                type: "error",
-              })
-        } finally {
-            setLoading(false); // Stop loading state
-        }
-    };
+    const { submitMember, loading } = useSaveMember();
+
     return (
         <>
             <Fieldset.Content>
@@ -80,22 +137,83 @@ const MemberForm = () => {
                 <Separator />
                 <Text textStyle="sm" fontWeight="bold">Personendaten</Text>
                 <Stack direction={{ base: "column", md: "row" }} w="full">
-                    <Field required label="Vorname" floatingLabel>
-                        <Input name="Vorname" {...register("first_name", {required: true})}/>
+                    <Field
+                        required
+                        label="Vorname"
+                        floatingLabel
+                        invalid={errors.first_name}
+                        errorText={errors.first_name?.message}
+                    >
+                        <Input
+                            name="Vorname"
+                            {...register(
+                                "first_name",
+                                { ...validations.firstName }
+                            )}
+                        />
                     </Field>
-                    <Field required label="Nachname" floatingLabel>
-                        <Input name="Nachname" {...register("last_name", {required: true})}/>
+                    <Field
+                        required
+                        label="Nachname"
+                        floatingLabel
+                        invalid={errors.last_name}
+                        errorText={errors.last_name?.message}
+                    >
+                        <Input
+                            name="Nachname"
+                            {...register(
+                                "last_name",
+                                { ...validations.lastName }
+                            )}
+                        />
                     </Field>
                 </Stack>
-                <Field required label="Geburtsdatum" floatingLabel>
-                    <Input name="Geburtsdatum" type="date" {...register("birth_date", {required: true})}/>
+                <Field
+                    required
+                    label="Geburtsdatum"
+                    floatingLabel
+                    invalid={errors.birth_date}
+                    errorText={errors.birth_date?.message}
+                >
+                    <Input
+                        name="Geburtsdatum"
+                        type="date"
+                        {...register(
+                            "birth_date",
+                            { ...validations.birthDate }
+                        )}
+                    />
                 </Field>
                 <Stack direction={{ base: "column", md: "row" }} w="full">
-                    <Field required label="Geburtsort" floatingLabel>
-                        <Input name="Geburtsort" {...register("birth_city", {required: true})}/>
+                    <Field
+                        required
+                        label="Geburtsort"
+                        floatingLabel
+                        invalid={errors.birth_city}
+                        errorText={errors.birth_city?.message}
+                    >
+                        <Input
+                            name="Geburtsort"
+                            {...register(
+                                "birth_city",
+                                { ...validations.birthCity }
+                            )}
+                        />
                     </Field>
-                    <Field required label="Geburtsland" floatingLabel>
-                        <Input name="Geburtsland" {...register("birth_country", {required: true})}/>
+                    <Field
+                        required
+                        label="Geburtsland"
+                        floatingLabel
+                        invalid={errors.birth_country}
+                        errorText={errors.birth_country?.message}
+                    >
+                        <Input
+                            name="Geburtsland"
+                            {...register(
+                                "birth_country",
+                                { ...validations.birthCountry }
+                            )}
+                        />
                     </Field>
                 </Stack>
                 {/* ########## Bild hochladen ########## */}
@@ -119,8 +237,19 @@ const MemberForm = () => {
                     </Box>
                     <Box w={{ base: "100%", md: "65%" }}>
                         {hasBirthName && (
-                            <Field label="Geburtsname" floatingLabel>
-                                <Input name="Geburtsname" {...register("birth_name")}/>
+                            <Field
+                                label="Geburtsname"
+                                floatingLabel
+                                invalid={errors.birth_name}
+                                errorText={errors.birth_name?.message}
+                            >
+                                <Input
+                                    name="Geburtsname"
+                                    {...register(
+                                        "birth_name",
+                                        { ...validations.birthName }
+                                    )}
+                                />
                             </Field>)}
                     </Box>
                 </Stack>
@@ -136,8 +265,15 @@ const MemberForm = () => {
                     </Box>
                     <Box w={{ base: "100%", md: "65%" }}>
                         {hasDeathDate && (
-                            <Field label="Sterbedatum" floatingLabel>
-                                <Input name="Sterbedatum" type="date" {...register("death_date")}/>
+                            <Field
+                                label="Sterbedatum"
+                                floatingLabel
+                            >
+                                <Input
+                                    name="Sterbedatum"
+                                    type="date"
+                                    {...register("death_date")}
+                                />
                             </Field>)}
                     </Box>
                 </Stack>
@@ -147,33 +283,89 @@ const MemberForm = () => {
                         <Separator />
                         <Text textStyle="sm" fontWeight="bold">Kontaktdaten</Text>
                         <Stack direction={{ base: "column", md: "row" }}>
-                            <Field label="Email" floatingLabel>
-                                <Input name="email" type="email" {...register("email")}/>
+                            <Field
+                                label="Email"
+                                floatingLabel
+                                invalid={errors.email}
+                                errorText={errors.email?.message}
+                            >
+                                <Input
+                                    name="email"
+                                    type="email"
+                                    {...register(
+                                        "email",
+                                        { ...validations.email }
+                                    )}
+                                />
                             </Field>
-                            <Field label="Telefon" floatingLabel>
-                                <Input name="Telefon" {...register("telephone")}/>
+                            <Field
+                                label="Telefon"
+                                floatingLabel
+                                invalid={errors.telephone}
+                                errorText={errors.telephone?.message}
+                            >
+                                <Input
+                                    name="Telefon"
+                                    {...register(
+                                        "telephone",
+                                        { ...validations.telephone }
+                                    )}
+                                />
                             </Field>
                         </Stack>
-                        <Field label="Straße und Hausnummer" floatingLabel>
-                            <Input name="Straße und Hausnummer" placeholder="Straße Hausnummer" {...register("street_number")}/>
+                        <Field
+                            label="Straße und Hausnummer"
+                            floatingLabel
+                            invalid={errors.street_number}
+                            errorText={errors.street_number?.message}
+                        >
+                            <Input
+                                name="Straße und Hausnummer"
+                                {...register(
+                                    "street_number",
+                                    { ...validations.streetNumber }
+                                )}
+                            />
                         </Field>
                         <Stack direction={{ base: "column", md: "row" }}>
-                            <Field label="Postleitzahl" floatingLabel>
-                                <Input name="Postleitzahl" placeholder="Postleitzahl" {...register("plz")}/>
+                            <Field
+                                label="Postleitzahl"
+                                floatingLabel
+                                invalid={errors.plz}
+                                errorText={errors.plz?.message}
+                            >
+                                <Input
+                                    name="Postleitzahl"
+                                    {...register(
+                                        "plz",
+                                        { ...validations.plz }
+                                    )}
+                                />
                             </Field>
-                            <Field label="Ort" floatingLabel>
-                                <Input name="Ort" placeholder="Ort" {...register("city")}/>
+                            <Field
+                                label="Ort"
+                                floatingLabel
+                                invalid={errors.city}
+                                errorText={errors.city?.message}
+                            >
+                                <Input
+                                    name="Ort"
+                                    {...register(
+                                        "city",
+                                        { ...validations.ort }
+                                    )}
+                                />
                             </Field>
                         </Stack>
                     </>
                 )}
             </Fieldset.Content>
 
-            <Button 
-                type="submit" 
-                alignSelf="flex-end" 
-                colorPalette="brand" 
-                onClick={handleSubmit(onSubmit)}
+            <Button
+                type="submit"
+                alignSelf="flex-end"
+                colorPalette="brand"
+                onClick={handleSubmit((data) => submitMember({ memberData: data, reset }))}
                 loading={loading}
                 loadingText="Speichern...">
                 Speichern

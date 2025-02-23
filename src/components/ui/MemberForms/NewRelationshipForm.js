@@ -6,88 +6,98 @@ import {
     Stack,
     HStack,
     Separator,
-    Text,
-    createListCollection
+    Text
 } from "@chakra-ui/react";
-import {
-    SelectContent,
-    SelectItem,
-    SelectLabel,
-    SelectRoot,
-    SelectTrigger,
-    SelectValueText,
-} from "components/ui/select.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HiOutlinePlusSm, HiOutlineX } from "react-icons/hi";
-
-/* Refactor me: Extract to a separate file to use for several forms */
-const SelectMembers = ({ selectLabel, id }) => {
-    return (
-        <SelectRoot collection={frameworks} size="sm" id={id}>
-            <SelectLabel>{selectLabel}</SelectLabel>
-            <SelectTrigger>
-                <SelectValueText placeholder="Name" />
-            </SelectTrigger>
-            <SelectContent>
-                {frameworks.items.map((movie) => (
-                    <SelectItem item={movie} key={movie.value}>
-                        {movie.label}
-                    </SelectItem>
-                ))}
-            </SelectContent>
-        </SelectRoot>
-    )
-};
-
-/* Refactor me: Delete mock data */
-const frameworks = createListCollection({
-    items: [
-        { label: "Hans Zimmer", value: "id1" },
-        { label: "Rudolph Hammer", value: "id2" },
-        { label: "Anita Bogenfrau", value: "id3" }
-    ],
-});
+import SelectMembers from "components/ui/MemberForms/SelectMember.js";
+import useCreateRelationship from "hooks/useCreateRelationship.js";
 
 const NewRelationshipForm = ({ maxW }) => {
-    const [ChildrenSelectors, setChildrenSelectors] = useState([]);
+    // State for managing the list of children selectors
+    const [childrenSelectors, setChildrenSelectors] = useState([]); // Array of objects with { id: number }
+
+    // State for managing the first partner
+    const [selectedFirstPartner, setSelectedFirstPartner] = useState(null); // Object representing a member or null
+
+    // State for managing the second partner
+    const [selectedSecondPartner, setSelectedSecondPartner] = useState(null); // Object representing a member or null
+
+    // State for managing the list of children. id is used to match the child with the selector
+    const [selectedChildren, setSelectedChildren] = useState([]); // Array of objects with { id: number, member: object or null }.
+
+    const [triggerReset, setTriggerReset] = useState(false);
+    const { submitRelationships, loading, error } = useCreateRelationship();
+
+    useEffect(() => {
+        if (!loading && !error) {
+            setChildrenSelectors([]);
+            setSelectedChildren([]);
+            setSelectedFirstPartner(null);
+            setSelectedSecondPartner(null);
+            setTriggerReset(!triggerReset);
+        }
+    }, [error, loading]);
+
     return (
         <Box>
             <Fieldset.Root size="lg" maxW={maxW}>
                 <Stack>
                     <Fieldset.Legend>Neue Beziehungen anlegen</Fieldset.Legend>
                     <Fieldset.HelperText>
-                        Eltern und gegebenenfalls Nachkommen eintragen, auf Speichern klicken.
+                        Partner und gegebenenfalls Nachkommen eintragen, auf Speichern klicken.
                     </Fieldset.HelperText>
                 </Stack>
 
                 <Fieldset.Content>
-                    {/* ########## Eltern ########## */}
+                    {/* ########## Partner ########## */}
                     <Separator />
-                    <Text textStyle="sm" fontWeight="bold">Eltern auswählen</Text>
+                    <Text textStyle="sm" fontWeight="bold">Partner auswählen</Text>
                     <Stack direction={{ base: "column", md: "row" }} w="full">
-                        <SelectMembers />
-                        <SelectMembers />
+                        <SelectMembers 
+                            setSelectedMember={setSelectedFirstPartner}
+                            selectedMember={selectedFirstPartner} 
+                            reset={triggerReset}
+                        />
+                        <SelectMembers 
+                            setSelectedMember={setSelectedSecondPartner} 
+                            selectedMember={selectedSecondPartner}    
+                            reset={triggerReset}
+                        />
                     </Stack>
 
                     {/* ########## Nachkommen ########## */}
                     <Separator />
                     <Text textStyle="sm" fontWeight="bold">Nachkommen auswählen</Text>
-                    {ChildrenSelectors ? (
-                        ChildrenSelectors.map((child) =>
-                            <HStack>
+                    {childrenSelectors ? (
+                        childrenSelectors.map((child) =>
+                            <HStack key={child.id}>
                                 <Box>
                                     <IconButton
                                         aria-label="Nachkommen entfernen"
                                         variant="ghost"
                                         size="sm"
                                         onClick={() => {
-                                            setChildrenSelectors(ChildrenSelectors.filter(c => c.id !== child.id));
+                                            setChildrenSelectors(childrenSelectors.filter(c => c.id !== child.id));
+                                            setSelectedChildren(selectedChildren.filter(c => c.id !== child.id));
                                         }}
                                     >
-                                        <HiOutlineX/>
+                                        <HiOutlineX />
                                     </IconButton>
                                 </Box>
-                                <SelectMembers id={child.id} />
+                                <SelectMembers 
+                                    setSelectedMember={(selectedChild) => {
+                                        setSelectedChildren((prevChildren) =>
+                                            prevChildren.map(c =>
+                                                c.id === child.id
+                                                    ? { id: c.id, member: selectedChild }
+                                                    : c
+                                            )
+                                        );
+                                    }}
+                                    selectedMember={selectedChildren.find(c => c.id === child.id)?.member}
+                                    reset={triggerReset}
+                                 />
                             </HStack>
                         )
                     ) : null}
@@ -97,10 +107,11 @@ const NewRelationshipForm = ({ maxW }) => {
                             variant="subtle"
                             size="sm"
                             onClick={() => {
-                                const maxID = ChildrenSelectors.length > 0
-                                    ? Math.max(...ChildrenSelectors.map(c => c.id))
+                                const maxID = childrenSelectors.length > 0
+                                    ? Math.max(...childrenSelectors.map(c => c.id))
                                     : 0;
-                                setChildrenSelectors([...ChildrenSelectors, { id: maxID + 1 }]);
+                                setChildrenSelectors([...childrenSelectors, { id: maxID + 1 }]);
+                                setSelectedChildren([...selectedChildren, { id: maxID + 1, member: null }]);
                             }}
                         >
                             <HiOutlinePlusSm />
@@ -109,7 +120,20 @@ const NewRelationshipForm = ({ maxW }) => {
 
                 </Fieldset.Content>
 
-                <Button type="submit" alignSelf="flex-end" colorPalette="brand">
+                <Button 
+                    type="submit" 
+                    alignSelf="flex-end" 
+                    colorPalette="brand"
+                    onClick={() =>
+                        submitRelationships({
+                            firstPartner: selectedFirstPartner,
+                            secondPartner: selectedSecondPartner,
+                            children: selectedChildren
+                        })
+                    }
+                    loading={loading}
+                    loadingText="Speichern..."
+                >
                     Speichern
                 </Button>
             </Fieldset.Root>
