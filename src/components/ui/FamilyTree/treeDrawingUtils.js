@@ -18,11 +18,12 @@ export const drawNode = (svg, x, y, radius, color) => {
     .attr('fill', color);
 };
 
-export const drawMemberNode = (svg, x, y, width, height, color, fontSize, member, setHoveredMember, setSelectedMember) => {
+export const drawMemberNode = (svg, x, y, width, height, color, fontSize, member) => {
   const fullName = `${member.first_name} ${member.last_name}`;
   const maxTextWidth = width * 0.9; // Allow some padding in the box
   let displayedText = fullName;
 
+  /*
   const handleMouseOver = (event) => {
     setHoveredMember(createMemberData(event, member));
   };
@@ -34,7 +35,7 @@ export const drawMemberNode = (svg, x, y, width, height, color, fontSize, member
   const handleClick = () => {
     setSelectedMember(createMemberData(null, member)); // No need for x/y in click
   };
-
+*/
   const textElement = svg.append('text')
     .attr('x', x)
     .attr('y', y)
@@ -68,9 +69,9 @@ export const drawMemberNode = (svg, x, y, width, height, color, fontSize, member
     .attr('stroke', color) // Border color depending on node type
     .attr('stroke-width', 1)
     .attr('rx', 5) // Rounded corners
-    .on('mouseover', handleMouseOver)  // Apply hover events
-    .on('mouseout', handleMouseOut)
-    .on('click', handleClick);
+    //.on('mouseover', handleMouseOver)  // Apply hover events
+    //.on('mouseout', handleMouseOut)
+    //.on('click', handleClick);
 
   // Re-add the text in the box with the same hover behavior
   svg.append('text')
@@ -82,9 +83,9 @@ export const drawMemberNode = (svg, x, y, width, height, color, fontSize, member
     .attr('font-size', fontSize)
     .attr('font-weight', 'bold')
     .text(displayedText)
-    .on('mouseover', handleMouseOver)  // Apply hover events to the text
-    .on('mouseout', handleMouseOut)
-    .on('click', handleClick);
+    //.on('mouseover', handleMouseOver)  // Apply hover events to the text
+    //.on('mouseout', handleMouseOut)
+    //.on('click', handleClick);
 };
 
 // Helper function to draw a smooth line (e.g., Bezier curve) between two points

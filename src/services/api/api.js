@@ -33,6 +33,13 @@ export const getFamilyMembers = async () => {
   });
 };
 
+export const getFamilyMemberById = async (id) => {
+  console.log('API_URL:', API_URL);
+  return apiCall(`${API_URL}/members/${id}`, {
+    method: 'GET',
+  });
+};
+
 export const createFamilyMember = async (memberData) => {
   return apiCall(`${API_URL}/members`, {
     method: 'POST',
@@ -73,7 +80,7 @@ export const createRelationship = async (relationshipData) => {
 };
 
 
-export const getFamilyTreeById = async (id, w_node = 100, w_partner = 50, w_children = 20) => {
+export const getFamilyTreeById = async (id, w_node, w_partner, w_children) => {
   return apiCall(`${API_URL}/family-tree/${id}?w_node=${w_node}&w_partner=${w_partner}&w_children=${w_children}`, {
     method: 'GET',
   });

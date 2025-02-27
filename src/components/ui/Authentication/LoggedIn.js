@@ -7,7 +7,7 @@ import {
     HoverCardContent,
     HoverCardRoot,
     HoverCardTrigger,
-  } from "components/ui/hover-card.jsx";
+  } from "components/ui/chakra-snippets/hover-card.jsx";
 
 const LoginInfo = () => {
     const { isAuthenticated } = useContext(AuthContext);

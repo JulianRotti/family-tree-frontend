@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { createFamilyMember, updateFamilyMember } from '../services/api/api.js';  // Import the API function
-import { toaster } from "components/ui/toaster.jsx"
+import { toaster } from "components/ui/chakra-snippets/toaster.jsx"
 import { MemberContext } from 'contexts/MemberContext.js';
 
 const useSaveMember = () => {

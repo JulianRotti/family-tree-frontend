@@ -15,14 +15,14 @@ const routes = [
     name: 'Familienmitglieder verwalten',
     path: '/manage-members',
     icon: FiUsers,
-    component: lazy(() => import('../pages/ManageMembers.js')),  // ManageMembers.js at "/manage-members"
+    component: lazy(() => import('../pages/ManageMembersPage.js')),  // ManageMembers.js at "/manage-members"
     role: 'editor',
   },
   {
     name: 'Stammbaum',
     path: '/family-tree',
     icon: FaTree,
-    component: lazy(() => import('../pages/FamilyTree.js')),
+    component: lazy(() => import('../pages/FamilyVisualiationPage.js')),
     role: 'viewer',
   },
   {

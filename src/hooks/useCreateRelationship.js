@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { createRelationship } from '../services/api/api.js';  // Import the API function
-import { toaster } from "components/ui/toaster.jsx"
+import { toaster } from "components/ui/chakra-snippets/toaster.jsx"
 
 const useCreateRelationship = () => {
   const [loading, setLoading] = useState(false);
@@ -22,8 +22,6 @@ const useCreateRelationship = () => {
     setLoading(true);
 
     try {
-      setLoading(true);
-
       validateRelationship({ member_1_id: member_1.id, member_2_id: member_2.id, relationship });
 
       // Call the API to create the relationship

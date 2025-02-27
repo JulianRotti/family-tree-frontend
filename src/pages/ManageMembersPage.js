@@ -5,7 +5,7 @@ import NewRelationshipForm from '../components/ui/MemberForms/NewRelationshipFor
 import { Box, Tabs, useBreakpointValue } from '@chakra-ui/react';
 import { HiOutlineUserAdd, HiOutlineUsers, HiOutlineRefresh } from "react-icons/hi";
 
-const ManageMembers = () => {
+const ManageMembersPage = () => {
   const tabOrientation = useBreakpointValue({ base: "horizontal", md: "vertical" });
   const isMobile = useBreakpointValue({ base: true, md: false });
   return (
@@ -49,4 +49,4 @@ const ManageMembers = () => {
   );
 };
 
-export default ManageMembers;
+export default ManageMembersPage;

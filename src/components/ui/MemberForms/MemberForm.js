@@ -7,20 +7,16 @@ import {
     Separator,
     Text
 } from "@chakra-ui/react";
-import { Field } from "components/ui/field.jsx";
-import { Switch } from "components/ui/switch.jsx";
+import { Field } from "components/ui/chakra-snippets/field.jsx";
+import { Switch } from "components/ui/chakra-snippets/switch.jsx";
 import {
     FileUploadList,
     FileUploadRoot,
     FileUploadTrigger,
-} from "components/ui/file-upload.jsx";
+} from "components/ui/chakra-snippets/file-upload.jsx";
 import { HiUpload } from "react-icons/hi";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-
-import { createFamilyMember, updateFamilyMember } from 'services/api/api.js';  // Import the API function
-import { toaster } from "components/ui/toaster.jsx"
-import { MemberContext } from 'contexts/MemberContext.js';
 
 import useSaveMember from "hooks/useSaveMember.js";
 

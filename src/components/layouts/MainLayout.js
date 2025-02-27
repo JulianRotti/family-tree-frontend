@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from '@chakra-ui/react';
-import { Toaster } from "components/ui/toaster.jsx"
+import { Toaster } from "components/ui/chakra-snippets/toaster.jsx"
 import Header from '../ui/Header/Header.js';
 import Footer from '../ui/Footer/Footer.js';
 import AppRoutes from '../../routes/AppRoutes.js';

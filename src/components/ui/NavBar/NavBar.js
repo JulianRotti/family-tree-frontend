@@ -8,7 +8,7 @@ import {
     MenuItem,
     MenuRoot,
     MenuTrigger,
-} from "components/ui/menu.jsx"
+} from "components/ui/chakra-snippets/menu.jsx"
 import { HiMenu } from "react-icons/hi";
 import { useNavigate } from "react-router-dom"
 
