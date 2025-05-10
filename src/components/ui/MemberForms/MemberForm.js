@@ -9,16 +9,16 @@ import {
 } from "@chakra-ui/react";
 import { Field } from "components/ui/chakra-snippets/field.jsx";
 import { Switch } from "components/ui/chakra-snippets/switch.jsx";
-import {
-    FileUploadList,
-    FileUploadRoot,
-    FileUploadTrigger,
-} from "components/ui/chakra-snippets/file-upload.jsx";
-import { HiUpload } from "react-icons/hi";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import useSaveMember from "hooks/useSaveMember.js";
+import ImageUploader from "components/ui/MemberForms/ImageUploader.js";
+
+/* Todos
+- delete image from UI after submission
+- display uploaded image if existing with modify button
+*/
 
 // Input validation
 const nameRegex = /^[A-Za-zÄÖÜäöüß-]+$/; // Allows letters, hyphens, and German umlauts
@@ -116,15 +116,16 @@ const validations = {
 const MemberForm = ({ defaultValues }) => {
     const [hasBirthName, setHasBirthName] = useState(false);
     const [hasDeathDate, setHasDeathDate] = useState(false);
-    const { register, handleSubmit, formState: { errors }, reset } = useForm({
+    const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm({
         mode: "onTouched",
         defaultValues
     });
+
     useEffect(() => {
         reset(defaultValues); // Updates form values when `defaultValues` changes
     }, [defaultValues, reset]); // Re-run effect when `defaultValues` changes
 
-    const { submitMember, loading } = useSaveMember();
+    const { submitMember, loading, submitted } = useSaveMember();
 
     return (
         <>
@@ -213,14 +214,11 @@ const MemberForm = ({ defaultValues }) => {
                     </Field>
                 </Stack>
                 {/* ########## Bild hochladen ########## */}
-                <FileUploadRoot maxFiles={5}>
-                    <FileUploadTrigger asChild>
-                        <Button variant="outline" size="sm">
-                            <HiUpload /> Bild hochladen
-                        </Button>
-                    </FileUploadTrigger>
-                    <FileUploadList showSize clearable />
-                </FileUploadRoot>
+                <ImageUploader 
+                    submitted={submitted}
+                    watch={watch} 
+                    setValue={setValue} 
+                />
                 <Stack direction={{ base: "column", md: "row" }}>
                     <Box w={{ base: "35%", md: "35%" }}>
                         <Field label="Geburtsname?" orientation="horizontal">

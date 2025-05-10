@@ -7,7 +7,7 @@ function _nullishCoalesce(lhs, rhsFn) {
     return rhsFn()
   }
 }
-;('use client')
+; ('use client')
 
 import {
   Button,
@@ -18,6 +18,9 @@ import {
   Text,
   useFileUploadContext,
   useRecipe,
+  Image,
+  Stack,
+  Box
 } from '@chakra-ui/react'
 import * as React from 'react'
 import { LuFile, LuUpload, LuX } from 'react-icons/lu'
@@ -53,12 +56,12 @@ export const FileUploadDropzone = React.forwardRef(
 )
 
 const FileUploadItem = React.forwardRef(function FileUploadItem(props, ref) {
-  const { file, showSize, clearable } = props
+  const { file, showSize, clearable, onFileRemove } = props
   return (
     <ChakraFileUpload.Item file={file} ref={ref}>
       <ChakraFileUpload.ItemPreview asChild>
         <Icon fontSize='lg' color='fg.muted'>
-          <LuFile />
+          <span><LuFile /></span>
         </Icon>
       </ChakraFileUpload.ItemPreview>
 
@@ -73,7 +76,7 @@ const FileUploadItem = React.forwardRef(function FileUploadItem(props, ref) {
 
       {clearable && (
         <ChakraFileUpload.ItemDeleteTrigger asChild>
-          <IconButton variant='ghost' color='fg.muted' size='xs'>
+          <IconButton variant='ghost' color='fg.muted' size='xs' onClick={() => onFileRemove(file)}>
             <LuX />
           </IconButton>
         </ChakraFileUpload.ItemDeleteTrigger>
@@ -82,27 +85,43 @@ const FileUploadItem = React.forwardRef(function FileUploadItem(props, ref) {
   )
 })
 
+// FIXME: when the identical image gets uploaded twice:
+// the image gets correctly displayed only once
+// but acceptedFile holds the image twice
+// when deleting the image from the display, the image gets deleted once from acceptedFiles
+// and still gets displayed
 export const FileUploadList = React.forwardRef(
   function FileUploadList(props, ref) {
-    const { showSize, clearable, files, ...rest } = props
+    const { memberImage, showSize, clearable, borderRadius, fit, files, onFileRemove, ...rest } = props
 
-    const fileUpload = useFileUploadContext()
-    const acceptedFiles = _nullishCoalesce(
-      files,
-      () => fileUpload.acceptedFiles,
-    )
-
-    if (acceptedFiles.length === 0) return null
+    if (!memberImage) return null;
+    const uniqueMemberImage = memberImage.reduce((acc, file) => {
+      if (!acc.some((f) => f.name === file.name || f.lastModified === file.lastModified)) {
+        acc.push(file)
+      }
+      return acc;
+    }, []);
 
     return (
       <ChakraFileUpload.ItemGroup ref={ref} {...rest}>
-        {acceptedFiles.map((file) => (
-          <FileUploadItem
-            key={file.name}
-            file={file}
-            showSize={showSize}
-            clearable={clearable}
-          />
+        {uniqueMemberImage.map((file) => (
+          <Box border="dashed" rounded="md" borderWidth="2px" borderColor="gray.300" p={3} mt={2} key={`${file.name}-${file.lastModified}`}>
+            <Stack direction={{ base: "column", md: "row" }} alignItems="center">
+              <Image
+                src={URL.createObjectURL(file)}
+                alt="Preview"
+                boxSize="100px"
+                borderRadius={borderRadius}
+                fit={fit}
+              />
+              <FileUploadItem
+                file={file}
+                showSize={showSize}
+                clearable={clearable}
+                onFileRemove={onFileRemove}
+              />
+            </Stack>
+          </Box>
         ))}
       </ChakraFileUpload.ItemGroup>
     )

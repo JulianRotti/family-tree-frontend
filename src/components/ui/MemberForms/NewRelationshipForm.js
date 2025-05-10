@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { HiOutlinePlusSm, HiOutlineX } from "react-icons/hi";
-import SelectMembers from "components/ui/SelectMembers/SelectMember.js";
+import SelectMembers from "components/ui/SelectMember/SelectMember.js";
 import useCreateRelationship from "hooks/useCreateRelationship.js";
 
 const NewRelationshipForm = ({ maxW }) => {

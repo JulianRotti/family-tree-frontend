@@ -1,6 +1,6 @@
 import { Box, Fieldset, Stack, Separator, Text } from "@chakra-ui/react";
 import MemberForm from "components/ui/MemberForms/MemberForm.js";
-import SelectMembers from "components/ui/SelectMembers/SelectMember.js";
+import SelectMembers from "components/ui/SelectMember/SelectMember.js";
 
 import { useState } from "react";
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Fieldset, Stack, Separator, Text } from "@chakra-ui/react";
-import SelectMembers from "components/ui/SelectMembers/SelectMember.js";
+import SelectMembers from "components/ui/SelectMember/SelectMember.js";
 import FamilyTreeVisualisation from "components/ui/FamilyTree/FamilyTreeVisualisation.js";
 import HeadOfFamily from "components/ui/FamilyTree/HeadOfFamily.js";
 import { useGetFamilyMemberById } from "hooks/useGetFamilyMembers.js";

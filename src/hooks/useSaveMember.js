@@ -6,11 +6,11 @@ import { MemberContext } from 'contexts/MemberContext.js';
 const useSaveMember = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const { fetchMembers } = useContext(MemberContext);
 
   const submitMember = async ({ memberData, reset }) => {
     console.log(memberData);
-    setLoading(true);
 
     try {
       setLoading(true);
@@ -37,7 +37,7 @@ const useSaveMember = () => {
           type: "success",
         })
       }
-
+      setSubmitted(true);
     } catch (err) {
       setError(err);
       toaster.create({
@@ -49,7 +49,7 @@ const useSaveMember = () => {
     }
   };
 
-  return { submitMember, loading, error };
+  return { submitMember, loading, error, submitted };
 };
 
 export default useSaveMember;

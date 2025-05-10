@@ -18,6 +18,7 @@ const NewMemberForm = ({ maxW }) => {
         street_number: null,
         plz: null,
         city: null,
+        member_image: null,
     }
 
     return (
